@@ -1,6 +1,9 @@
 # Secrets & local config
 .env
 
+# Local Claude guidance — never pushed
+CLAUDE.md
+
 # Local databases (real shop data stays on this machine)
 *.db
 *.db-wal

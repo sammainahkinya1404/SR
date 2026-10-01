@@ -1,0 +1,8855 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Retail Management API",
+  "version": "0.1.0"
+ },
+ "paths": {
+  "/health": {
+   "get": {
+    "tags": [
+     "meta"
+    ],
+    "summary": "Health",
+    "operationId": "health_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": {
+          "type": "string"
+         },
+         "type": "object",
+         "title": "Response Health Health Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/businesses": {
+   "post": {
+    "tags": [
+     "businesses"
+    ],
+    "summary": "Create Business",
+    "description": "Unauthenticated one-time setup: opens the shop and its owner account.",
+    "operationId": "create_business_businesses_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BusinessCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BusinessOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/setup": {
+   "get": {
+    "tags": [
+     "businesses"
+    ],
+    "summary": "Setup Status",
+    "description": "Unauthenticated: whether the shop is set up, and who can sign in.\n\nDEV AUTH ONLY: listing users to pick from stands in for owner OTP / cashier PIN sign-in.",
+    "operationId": "setup_status_setup_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SetupOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/users": {
+   "get": {
+    "tags": [
+     "businesses"
+    ],
+    "summary": "List Users",
+    "operationId": "list_users_users_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/UserOut"
+         },
+         "type": "array",
+         "title": "Response List Users Users Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "businesses"
+    ],
+    "summary": "Create User",
+    "operationId": "create_user_users_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UserCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UserOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/me": {
+   "get": {
+    "tags": [
+     "businesses"
+    ],
+    "summary": "Me",
+    "description": "Who the current headers identify: lets a client confirm a sign-in and show the business.",
+    "operationId": "me_me_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/inventory/receive": {
+   "post": {
+    "tags": [
+     "inventory"
+    ],
+    "summary": "Receive Stock",
+    "description": "Add stock: one item, or a bulk order sharing one transport payment. New names become new\nproducts, priced by the pricing engine from their landed cost.",
+    "operationId": "receive_stock_inventory_receive_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReceiveCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReceiveOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/products": {
+   "get": {
+    "tags": [
+     "products"
+    ],
+    "summary": "List Products",
+    "operationId": "list_products_products_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "include_inactive",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Include Inactive"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ProductOut"
+         },
+         "title": "Response List Products Products Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "products"
+    ],
+    "summary": "Create Product",
+    "operationId": "create_product_products_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProductCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProductOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/products/min-prices": {
+   "put": {
+    "tags": [
+     "products"
+    ],
+    "summary": "Set Min Prices",
+    "description": "Set the bottom of each item's price range (many at once). Cashiers can sell anywhere from\nthe minimum up to the selling price; below it needs the owner.",
+    "operationId": "set_min_prices_products_min_prices_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MinPricesUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ProductOut"
+         },
+         "type": "array",
+         "title": "Response Set Min Prices Products Min Prices Put"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/products/{product_id}": {
+   "get": {
+    "tags": [
+     "products"
+    ],
+    "summary": "Get Product",
+    "operationId": "get_product_products__product_id__get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Product Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProductOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "products"
+    ],
+    "summary": "Update Product",
+    "operationId": "update_product_products__product_id__patch",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Product Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProductUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProductOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/products/{product_id}/pricing": {
+   "put": {
+    "tags": [
+     "products"
+    ],
+    "summary": "Set Pricing",
+    "operationId": "set_pricing_products__product_id__pricing_put",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Product Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PricingUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProductOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/products/{product_id}/movements": {
+   "get": {
+    "tags": [
+     "products"
+    ],
+    "summary": "List Movements",
+    "operationId": "list_movements_products__product_id__movements_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Product Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/MovementOut"
+         },
+         "title": "Response List Movements Products  Product Id  Movements Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/products/{product_id}/price-history": {
+   "get": {
+    "tags": [
+     "products"
+    ],
+    "summary": "List Price History",
+    "operationId": "list_price_history_products__product_id__price_history_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "product_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Product Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/PriceHistoryOut"
+         },
+         "title": "Response List Price History Products  Product Id  Price History Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sets": {
+   "get": {
+    "tags": [
+     "sets"
+    ],
+    "summary": "List Sets",
+    "operationId": "list_sets_sets_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/SetOut"
+         },
+         "type": "array",
+         "title": "Response List Sets Sets Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "sets"
+    ],
+    "summary": "Create Set",
+    "description": "A set bought as one unit and sold as separate items, each with its own price.",
+    "operationId": "create_set_sets_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SetUpsert"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SetOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/sets/{set_id}": {
+   "get": {
+    "tags": [
+     "sets"
+    ],
+    "summary": "Get Set",
+    "operationId": "get_set_sets__set_id__get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "set_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Set Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SetOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "put": {
+    "tags": [
+     "sets"
+    ],
+    "summary": "Update Set",
+    "description": "Redefine the set: name, components, qty per set and each component's price.",
+    "operationId": "update_set_sets__set_id__put",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "set_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Set Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SetUpsert"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SetOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sets/{set_id}/convert-stock": {
+   "post": {
+    "tags": [
+     "sets"
+    ],
+    "summary": "Convert Stock",
+    "description": "Move stock already on hand into this set's items, keeping its total cost.",
+    "operationId": "convert_stock_sets__set_id__convert_stock_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "set_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Set Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ConvertStockIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ConvertStockOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sets/{set_id}/reshare-cost": {
+   "post": {
+    "tags": [
+     "sets"
+    ],
+    "summary": "Reshare Cost",
+    "description": "Re-share the cost of the set's stock on hand across its items by selling price.",
+    "operationId": "reshare_cost_sets__set_id__reshare_cost_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "set_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Set Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReshareIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReshareOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stock-in-batches": {
+   "post": {
+    "tags": [
+     "stock-in"
+    ],
+    "summary": "Create Batch",
+    "operationId": "create_batch_stock_in_batches_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/BatchCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BatchOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "stock-in"
+    ],
+    "summary": "List Batches",
+    "description": "Recent deliveries, newest first; `status=draft` finds unposted ones.",
+    "operationId": "list_batches_stock_in_batches_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/BatchStatus"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 500,
+       "minimum": 1,
+       "default": 50,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/BatchOut"
+         },
+         "title": "Response List Batches Stock In Batches Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stock-in-batches/{batch_id}": {
+   "get": {
+    "tags": [
+     "stock-in"
+    ],
+    "summary": "Get Batch",
+    "operationId": "get_batch_stock_in_batches__batch_id__get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "batch_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Batch Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BatchOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stock-in-batches/{batch_id}/costs/{cost_type}": {
+   "put": {
+    "tags": [
+     "stock-in"
+    ],
+    "summary": "Set Cost",
+    "operationId": "set_cost_stock_in_batches__batch_id__costs__cost_type__put",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "batch_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Batch Id"
+      }
+     },
+     {
+      "name": "cost_type",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "$ref": "#/components/schemas/SharedCostType"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CostSet"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BatchOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stock-in-batches/{batch_id}/post": {
+   "post": {
+    "tags": [
+     "stock-in"
+    ],
+    "summary": "Post Batch",
+    "operationId": "post_batch_stock_in_batches__batch_id__post_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "batch_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Batch Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BatchOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stock-in-batches/{batch_id}/void": {
+   "post": {
+    "tags": [
+     "stock-in"
+    ],
+    "summary": "Void Batch",
+    "operationId": "void_batch_stock_in_batches__batch_id__void_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "batch_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Batch Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BatchOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/price-suggestions": {
+   "get": {
+    "tags": [
+     "pricing"
+    ],
+    "summary": "List Suggestions",
+    "operationId": "list_suggestions_price_suggestions_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/SuggestionStatus"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": "pending",
+       "title": "Status"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/SuggestionOut"
+         },
+         "title": "Response List Suggestions Price Suggestions Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/price-suggestions/{suggestion_id}/approve": {
+   "post": {
+    "tags": [
+     "pricing"
+    ],
+    "summary": "Approve",
+    "operationId": "approve_price_suggestions__suggestion_id__approve_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "suggestion_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Suggestion Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SuggestionOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/price-suggestions/{suggestion_id}/reject": {
+   "post": {
+    "tags": [
+     "pricing"
+    ],
+    "summary": "Reject",
+    "operationId": "reject_price_suggestions__suggestion_id__reject_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "suggestion_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Suggestion Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SuggestionOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sales": {
+   "post": {
+    "tags": [
+     "sales"
+    ],
+    "summary": "Post Sale",
+    "operationId": "post_sale_sales_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SaleCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SaleOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "sales"
+    ],
+    "summary": "List Sales",
+    "operationId": "list_sales_sales_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date-time"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "until",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date-time"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Until"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 500,
+       "minimum": 1,
+       "default": 50,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/SaleOut"
+         },
+         "title": "Response List Sales Sales Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sales/{sale_id}": {
+   "get": {
+    "tags": [
+     "sales"
+    ],
+    "summary": "Get Sale",
+    "operationId": "get_sale_sales__sale_id__get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "sale_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Sale Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SaleOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sales/{sale_id}/receipt": {
+   "get": {
+    "tags": [
+     "sales"
+    ],
+    "summary": "Get Receipt",
+    "operationId": "get_receipt_sales__sale_id__receipt_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "sale_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Sale Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReceiptOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/sales/{sale_id}/returns": {
+   "post": {
+    "tags": [
+     "sales"
+    ],
+    "summary": "Post Return",
+    "operationId": "post_return_sales__sale_id__returns_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "sale_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Sale Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReturnCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ReturnOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "sales"
+    ],
+    "summary": "List Returns",
+    "operationId": "list_returns_sales__sale_id__returns_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "sale_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Sale Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ReturnOut"
+         },
+         "title": "Response List Returns Sales  Sale Id  Returns Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/accounts": {
+   "get": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "List Accounts",
+    "operationId": "list_accounts_accounts_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/AccountOut"
+         },
+         "type": "array",
+         "title": "Response List Accounts Accounts Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "Create Account",
+    "operationId": "create_account_accounts_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AccountCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AccountOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/accounts/{account_id}/ledger": {
+   "get": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "Account Ledger",
+    "operationId": "account_ledger_accounts__account_id__ledger_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "account_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Account Id"
+      }
+     },
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date-time"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 1000,
+       "minimum": 1,
+       "default": 100,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/LedgerEntryOut"
+         },
+         "title": "Response Account Ledger Accounts  Account Id  Ledger Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/expense-categories": {
+   "get": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "List Categories",
+    "operationId": "list_categories_expense_categories_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/CategoryOut"
+         },
+         "type": "array",
+         "title": "Response List Categories Expense Categories Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Create Category",
+    "operationId": "create_category_expense_categories_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CategoryCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CategoryOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/expense-categories/{category_id}": {
+   "patch": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Update Category",
+    "operationId": "update_category_expense_categories__category_id__patch",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "category_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Category Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CategoryUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CategoryOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/expenses": {
+   "post": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Create Expense",
+    "operationId": "create_expense_expenses_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ExpenseCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ExpenseOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "List Expenses",
+    "operationId": "list_expenses_expenses_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "until",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Until"
+      }
+     },
+     {
+      "name": "category_id",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "uuid"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Category Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ExpenseOut"
+         },
+         "title": "Response List Expenses Expenses Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/expenses/{expense_id}": {
+   "get": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Get Expense",
+    "operationId": "get_expense_expenses__expense_id__get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "expense_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Expense Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ExpenseOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/expenses/{expense_id}/reverse": {
+   "post": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Reverse Expense",
+    "operationId": "reverse_expense_expenses__expense_id__reverse_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "expense_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Expense Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReverseIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ExpenseOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/recurring-expenses": {
+   "get": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "List Recurring",
+    "operationId": "list_recurring_recurring_expenses_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/RecurringOut"
+         },
+         "type": "array",
+         "title": "Response List Recurring Recurring Expenses Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Create Recurring",
+    "operationId": "create_recurring_recurring_expenses_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecurringCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RecurringOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/recurring-expenses/{recurring_id}": {
+   "patch": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Update Recurring",
+    "operationId": "update_recurring_recurring_expenses__recurring_id__patch",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "recurring_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Recurring Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RecurringUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RecurringOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/recurring-expenses/run": {
+   "post": {
+    "tags": [
+     "expenses"
+    ],
+    "summary": "Run Recurring",
+    "description": "Post everything due up to today. The nightly job (`python -m app.jobs`) does the same.",
+    "operationId": "run_recurring_recurring_expenses_run_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/ExpenseOut"
+         },
+         "type": "array",
+         "title": "Response Run Recurring Recurring Expenses Run Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/transfers": {
+   "get": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "List Transfers",
+    "operationId": "list_transfers_transfers_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/TransferOut"
+         },
+         "type": "array",
+         "title": "Response List Transfers Transfers Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "Create Transfer",
+    "operationId": "create_transfer_transfers_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TransferCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TransferOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/capital": {
+   "post": {
+    "tags": [
+     "owner"
+    ],
+    "summary": "Record Opening Capital",
+    "operationId": "record_opening_capital_capital_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CapitalCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/OwnerEntryOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/drawings": {
+   "post": {
+    "tags": [
+     "owner"
+    ],
+    "summary": "Record Drawing",
+    "operationId": "record_drawing_drawings_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DrawingCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/DrawingOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/owner-entries": {
+   "get": {
+    "tags": [
+     "owner"
+    ],
+    "summary": "List Owner Entries",
+    "operationId": "list_owner_entries_owner_entries_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "type",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "$ref": "#/components/schemas/OwnerEntryType"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Type"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/OwnerEntryOut"
+         },
+         "title": "Response List Owner Entries Owner Entries Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/profit-to-date": {
+   "get": {
+    "tags": [
+     "owner"
+    ],
+    "summary": "Profit To Date",
+    "operationId": "profit_to_date_profit_to_date_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProfitOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/cash-ups": {
+   "post": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "Create Cash Up",
+    "operationId": "create_cash_up_cash_ups_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CashUpCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CashUpOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "get": {
+    "tags": [
+     "cash"
+    ],
+    "summary": "List Cash Ups",
+    "operationId": "list_cash_ups_cash_ups_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/CashUpOut"
+         },
+         "title": "Response List Cash Ups Cash Ups Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/stock-adjustments": {
+   "post": {
+    "tags": [
+     "stock"
+    ],
+    "summary": "Write Off Stock",
+    "operationId": "write_off_stock_stock_adjustments_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/StockAdjustmentCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StockAdjustmentOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/customers": {
+   "get": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "List Customers",
+    "operationId": "list_customers_customers_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/CustomerOut"
+         },
+         "title": "Response List Customers Customers Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Create Customer",
+    "operationId": "create_customer_customers_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CustomerCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CustomerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/customers/{customer_id}": {
+   "get": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Get Customer",
+    "operationId": "get_customer_customers__customer_id__get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "customer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Customer Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CustomerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Update Customer",
+    "operationId": "update_customer_customers__customer_id__patch",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "customer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Customer Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CustomerUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CustomerOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/customers/{customer_id}/statement": {
+   "get": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Customer Statement",
+    "operationId": "customer_statement_customers__customer_id__statement_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "customer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Customer Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/StatementOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/customers/{customer_id}/repayments": {
+   "post": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Record Repayment",
+    "operationId": "record_repayment_customers__customer_id__repayments_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "customer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Customer Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RepaymentCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CreditEntryOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/customers/{customer_id}/write-offs": {
+   "post": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Write Off",
+    "operationId": "write_off_customers__customer_id__write_offs_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "customer_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Customer Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WriteOffCreate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/CreditEntryOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/credit/ageing": {
+   "get": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Ageing Report",
+    "operationId": "ageing_report_credit_ageing_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "as_of",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "As Of"
+      }
+     },
+     {
+      "name": "format",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/Format",
+       "default": "json"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AgeingOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/credit/reminders/run": {
+   "post": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Queue Reminders",
+    "description": "Queue today's reminders. The daily job (`python -m app.jobs credit-reminders`) does the\nsame for every business.",
+    "operationId": "queue_reminders_credit_reminders_run_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/SmsOut"
+         },
+         "type": "array",
+         "title": "Response Queue Reminders Credit Reminders Run Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/sms-outbox": {
+   "get": {
+    "tags": [
+     "credit"
+    ],
+    "summary": "Sms Outbox",
+    "operationId": "sms_outbox_sms_outbox_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "default": "pending",
+       "title": "Status"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/SmsOut"
+         },
+         "title": "Response Sms Outbox Sms Outbox Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/dashboard": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Dashboard",
+    "description": "The seven metrics for today, this week and this month, each against the same span of the\nprevious period, plus break-even and the active alerts.",
+    "operationId": "dashboard_dashboard_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/DashboardOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/metrics/daily": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Daily Metrics",
+    "operationId": "daily_metrics_metrics_daily_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "days",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 366,
+       "minimum": 1,
+       "default": 30,
+       "title": "Days"
+      }
+     },
+     {
+      "name": "format",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/Format",
+       "default": "json"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/DayOut"
+         },
+         "title": "Response Daily Metrics Metrics Daily Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/reports/profit": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Profit Report",
+    "description": "Net profit = gross profit - operating expenses, by day (spec Part A \u00a79).",
+    "operationId": "profit_report_reports_profit_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "until",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Until"
+      }
+     },
+     {
+      "name": "format",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/Format",
+       "default": "json"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ProfitReportOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/reports/break-even": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Break Even",
+    "operationId": "break_even_reports_break_even_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/BreakEvenOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/reports/products": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Product Ranking",
+    "description": "Products ranked by gross profit, units sold, turnover or GMROI (spec Part A \u00a79).",
+    "operationId": "product_ranking_reports_products_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "since",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Since"
+      }
+     },
+     {
+      "name": "until",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Until"
+      }
+     },
+     {
+      "name": "sort",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/RankBy",
+       "default": "gross_profit"
+      }
+     },
+     {
+      "name": "format",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "$ref": "#/components/schemas/Format",
+       "default": "json"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ProductRankOut"
+         },
+         "title": "Response Product Ranking Reports Products Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/alerts": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "List Alerts",
+    "operationId": "list_alerts_alerts_get",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "include_resolved",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Include Resolved"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/AlertOut"
+         },
+         "title": "Response List Alerts Alerts Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/alerts/run": {
+   "post": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Run Alerts",
+    "description": "Run every check now. The daily job (`python -m app.jobs check-alerts`) does the same.",
+    "operationId": "run_alerts_alerts_run_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AlertRunOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  },
+  "/alerts/{alert_id}/acknowledge": {
+   "post": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Acknowledge Alert",
+    "operationId": "acknowledge_alert_alerts__alert_id__acknowledge_post",
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "alert_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Alert Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AlertOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/settings": {
+   "get": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Get Settings",
+    "operationId": "get_settings_settings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SettingsOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   },
+   "patch": {
+    "tags": [
+     "reports"
+    ],
+    "summary": "Update Settings",
+    "operationId": "update_settings_settings_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SettingsUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/SettingsOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "APIKeyHeader": []
+     }
+    ]
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "AccountCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "$ref": "#/components/schemas/AccountType"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "type",
+     "name"
+    ],
+    "title": "AccountCreate"
+   },
+   "AccountOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "balance_cents": {
+      "type": "integer",
+      "title": "Balance Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "name",
+     "balance_cents"
+    ],
+    "title": "AccountOut"
+   },
+   "AccountType": {
+    "type": "string",
+    "enum": [
+     "cash",
+     "mpesa",
+     "bank"
+    ],
+    "title": "AccountType"
+   },
+   "AgeingBucket": {
+    "type": "string",
+    "enum": [
+     "current",
+     "1-30",
+     "31-60",
+     "61-90",
+     "90+"
+    ],
+    "title": "AgeingBucket"
+   },
+   "AgeingOut": {
+    "properties": {
+     "as_of": {
+      "type": "string",
+      "format": "date",
+      "title": "As Of"
+     },
+     "rows": {
+      "items": {
+       "$ref": "#/components/schemas/AgeingRow"
+      },
+      "type": "array",
+      "title": "Rows"
+     },
+     "totals": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "$ref": "#/components/schemas/AgeingBucket"
+      },
+      "type": "object",
+      "title": "Totals"
+     },
+     "total_cents": {
+      "type": "integer",
+      "title": "Total Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "as_of",
+     "rows",
+     "totals",
+     "total_cents"
+    ],
+    "title": "AgeingOut"
+   },
+   "AgeingRow": {
+    "properties": {
+     "customer_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Customer Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "balance_cents": {
+      "type": "integer",
+      "title": "Balance Cents"
+     },
+     "buckets": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "$ref": "#/components/schemas/AgeingBucket"
+      },
+      "type": "object",
+      "title": "Buckets"
+     }
+    },
+    "type": "object",
+    "required": [
+     "customer_id",
+     "name",
+     "phone",
+     "balance_cents",
+     "buckets"
+    ],
+    "title": "AgeingRow"
+   },
+   "AlertOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "entity_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Entity Id"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated At"
+     },
+     "resolved_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Resolved At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "entity_id",
+     "message",
+     "status",
+     "created_at",
+     "updated_at",
+     "resolved_at"
+    ],
+    "title": "AlertOut"
+   },
+   "AlertRunOut": {
+    "properties": {
+     "opened": {
+      "type": "integer",
+      "title": "Opened"
+     },
+     "resolved": {
+      "type": "integer",
+      "title": "Resolved"
+     },
+     "active": {
+      "items": {
+       "$ref": "#/components/schemas/AlertOut"
+      },
+      "type": "array",
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "required": [
+     "opened",
+     "resolved",
+     "active"
+    ],
+    "title": "AlertRunOut"
+   },
+   "AllocationMethod": {
+    "type": "string",
+    "enum": [
+     "by_value",
+     "by_quantity"
+    ],
+    "title": "AllocationMethod"
+   },
+   "BatchCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "supplier_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supplier Name"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "allocation_method": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/AllocationMethod"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/LineIn"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Lines"
+     },
+     "costs": {
+      "additionalProperties": {
+       "type": "integer",
+       "minimum": 0.0
+      },
+      "propertyNames": {
+       "$ref": "#/components/schemas/SharedCostType"
+      },
+      "type": "object",
+      "title": "Costs"
+     }
+    },
+    "type": "object",
+    "required": [
+     "date",
+     "lines"
+    ],
+    "title": "BatchCreate"
+   },
+   "BatchOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "supplier_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supplier Name"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "allocation_method": {
+      "$ref": "#/components/schemas/AllocationMethod"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/LineOut"
+      },
+      "type": "array",
+      "title": "Lines"
+     },
+     "costs": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "$ref": "#/components/schemas/SharedCostType"
+      },
+      "type": "object",
+      "title": "Costs"
+     },
+     "missing_costs": {
+      "items": {
+       "$ref": "#/components/schemas/SharedCostType"
+      },
+      "type": "array",
+      "title": "Missing Costs"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "supplier_name",
+     "date",
+     "allocation_method",
+     "status",
+     "lines",
+     "costs",
+     "missing_costs"
+    ],
+    "title": "BatchOut"
+   },
+   "BatchStatus": {
+    "type": "string",
+    "enum": [
+     "draft",
+     "posted",
+     "voided"
+    ],
+    "title": "BatchStatus"
+   },
+   "BreakEvenOut": {
+    "properties": {
+     "monthly_fixed_costs": {
+      "type": "integer",
+      "title": "Monthly Fixed Costs"
+     },
+     "gross_margin": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gross Margin"
+     },
+     "monthly": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Monthly"
+     },
+     "daily": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Daily"
+     },
+     "month_to_date_sales": {
+      "type": "integer",
+      "title": "Month To Date Sales"
+     },
+     "pro_rata_target": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Pro Rata Target"
+     },
+     "below": {
+      "type": "boolean",
+      "title": "Below"
+     }
+    },
+    "type": "object",
+    "required": [
+     "monthly_fixed_costs",
+     "gross_margin",
+     "monthly",
+     "daily",
+     "month_to_date_sales",
+     "pro_rata_target",
+     "below"
+    ],
+    "title": "BreakEvenOut"
+   },
+   "BusinessCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "owner_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Owner Id"
+     },
+     "owner_name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Owner Name"
+     },
+     "owner_phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Owner Phone"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "owner_name"
+    ],
+    "title": "BusinessCreate"
+   },
+   "BusinessOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "owner_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Owner Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "owner_id"
+    ],
+    "title": "BusinessOut"
+   },
+   "CapitalCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "account_id",
+     "amount_cents"
+    ],
+    "title": "CapitalCreate"
+   },
+   "CashUpCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "counted_cents": {
+      "type": "integer",
+      "title": "Counted Cents"
+     },
+     "explanation": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Explanation"
+     }
+    },
+    "type": "object",
+    "required": [
+     "account_id",
+     "counted_cents"
+    ],
+    "title": "CashUpCreate"
+   },
+   "CashUpOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "expected": {
+      "type": "integer",
+      "title": "Expected"
+     },
+     "counted": {
+      "type": "integer",
+      "title": "Counted"
+     },
+     "variance": {
+      "type": "integer",
+      "title": "Variance"
+     },
+     "explanation": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Explanation"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "account_id",
+     "date",
+     "expected",
+     "counted",
+     "variance",
+     "explanation",
+     "user_id",
+     "ts"
+    ],
+    "title": "CashUpOut"
+   },
+   "CategoryCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "is_fixed": {
+      "type": "boolean",
+      "title": "Is Fixed",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "CategoryCreate"
+   },
+   "CategoryOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "is_fixed": {
+      "type": "boolean",
+      "title": "Is Fixed"
+     },
+     "system": {
+      "type": "boolean",
+      "title": "System"
+     },
+     "active": {
+      "type": "boolean",
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "is_fixed",
+     "system",
+     "active"
+    ],
+    "title": "CategoryOut"
+   },
+   "CategoryUpdate": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "is_fixed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Fixed"
+     },
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "title": "CategoryUpdate"
+   },
+   "ComponentIn": {
+    "properties": {
+     "product_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Id"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "qty_per_set": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty Per Set"
+     },
+     "price_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Price Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "qty_per_set",
+     "price_cents"
+    ],
+    "title": "ComponentIn",
+    "description": "An existing item (product_id) or a new one (name). The price is its own selling price."
+   },
+   "ComponentOut": {
+    "properties": {
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "qty_per_set": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty Per Set"
+     },
+     "price_cents": {
+      "type": "integer",
+      "title": "Price Cents"
+     },
+     "wac_cents": {
+      "type": "integer",
+      "title": "Wac Cents"
+     },
+     "qty_on_hand": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty On Hand"
+     },
+     "cost_share": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Cost Share"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "name",
+     "qty_per_set",
+     "price_cents",
+     "wac_cents",
+     "qty_on_hand",
+     "cost_share"
+    ],
+    "title": "ComponentOut"
+   },
+   "ConvertStockIn": {
+    "properties": {
+     "sources": {
+      "items": {
+       "$ref": "#/components/schemas/StockQty"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Sources"
+     },
+     "targets": {
+      "items": {
+       "$ref": "#/components/schemas/StockQty"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Targets"
+     },
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     },
+     "deactivate_emptied_sources": {
+      "type": "boolean",
+      "title": "Deactivate Emptied Sources",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "sources",
+     "targets",
+     "reason"
+    ],
+    "title": "ConvertStockIn",
+    "description": "Move stock already on hand (e.g. an old 'Sufuria(1-5)' item) into a set's components. The\ntotal cost moves with it, re-shared across the components by selling price."
+   },
+   "ConvertStockOut": {
+    "properties": {
+     "value_moved_cents": {
+      "type": "integer",
+      "title": "Value Moved Cents"
+     },
+     "set": {
+      "$ref": "#/components/schemas/SetOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "value_moved_cents",
+     "set"
+    ],
+    "title": "ConvertStockOut"
+   },
+   "CostSet": {
+    "properties": {
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Amount Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "amount_cents"
+    ],
+    "title": "CostSet"
+   },
+   "CreditEntryOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "due_date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due Date"
+     },
+     "sale_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sale Id"
+     },
+     "account_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Account Id"
+     },
+     "mpesa_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mpesa Code"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "amount",
+     "due_date",
+     "sale_id",
+     "account_id",
+     "mpesa_code",
+     "note",
+     "user_id",
+     "ts"
+    ],
+    "title": "CreditEntryOut"
+   },
+   "CustomerCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 20
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "id_number": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 30
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id Number"
+     },
+     "credit_limit_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Credit Limit Cents",
+      "default": 0
+     },
+     "terms_days": {
+      "type": "integer",
+      "maximum": 365.0,
+      "minimum": 0.0,
+      "title": "Terms Days",
+      "default": 30
+     }
+    },
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "CustomerCreate"
+   },
+   "CustomerOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "id_number": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id Number"
+     },
+     "credit_limit_cents": {
+      "type": "integer",
+      "title": "Credit Limit Cents"
+     },
+     "terms_days": {
+      "type": "integer",
+      "title": "Terms Days"
+     },
+     "active": {
+      "type": "boolean",
+      "title": "Active"
+     },
+     "balance_cents": {
+      "type": "integer",
+      "title": "Balance Cents"
+     },
+     "overdue_cents": {
+      "type": "integer",
+      "title": "Overdue Cents"
+     },
+     "available_credit_cents": {
+      "type": "integer",
+      "title": "Available Credit Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "phone",
+     "id_number",
+     "credit_limit_cents",
+     "terms_days",
+     "active",
+     "balance_cents",
+     "overdue_cents",
+     "available_credit_cents"
+    ],
+    "title": "CustomerOut"
+   },
+   "CustomerUpdate": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 20
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "id_number": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 30
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Id Number"
+     },
+     "credit_limit_cents": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Credit Limit Cents"
+     },
+     "terms_days": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 365.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Terms Days"
+     },
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "title": "CustomerUpdate"
+   },
+   "DashboardOut": {
+    "properties": {
+     "as_of": {
+      "type": "string",
+      "format": "date",
+      "title": "As Of"
+     },
+     "periods": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/PeriodOut"
+      },
+      "type": "object",
+      "title": "Periods"
+     },
+     "break_even": {
+      "$ref": "#/components/schemas/BreakEvenOut"
+     },
+     "alerts": {
+      "items": {
+       "$ref": "#/components/schemas/AlertOut"
+      },
+      "type": "array",
+      "title": "Alerts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "as_of",
+     "periods",
+     "break_even",
+     "alerts"
+    ],
+    "title": "DashboardOut"
+   },
+   "DayOut": {
+    "properties": {
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "sales": {
+      "type": "integer",
+      "title": "Sales"
+     },
+     "cogs": {
+      "type": "integer",
+      "title": "Cogs"
+     },
+     "gross_profit": {
+      "type": "integer",
+      "title": "Gross Profit"
+     },
+     "opex": {
+      "type": "integer",
+      "title": "Opex"
+     },
+     "net_profit": {
+      "type": "integer",
+      "title": "Net Profit"
+     },
+     "stock_value": {
+      "type": "integer",
+      "title": "Stock Value"
+     },
+     "cash": {
+      "type": "integer",
+      "title": "Cash"
+     }
+    },
+    "type": "object",
+    "required": [
+     "date",
+     "sales",
+     "cogs",
+     "gross_profit",
+     "opex",
+     "net_profit",
+     "stock_value",
+     "cash"
+    ],
+    "title": "DayOut"
+   },
+   "DrawingCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "account_id",
+     "amount_cents"
+    ],
+    "title": "DrawingCreate"
+   },
+   "DrawingOut": {
+    "properties": {
+     "entry": {
+      "$ref": "#/components/schemas/OwnerEntryOut"
+     },
+     "drawings_to_date": {
+      "type": "integer",
+      "title": "Drawings To Date"
+     },
+     "net_profit_to_date": {
+      "type": "integer",
+      "title": "Net Profit To Date"
+     },
+     "warning": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Warning"
+     }
+    },
+    "type": "object",
+    "required": [
+     "entry",
+     "drawings_to_date",
+     "net_profit_to_date",
+     "warning"
+    ],
+    "title": "DrawingOut"
+   },
+   "ExpenseCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "category_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Category Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "is_fixed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Fixed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "receipt_url": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 500
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Receipt Url"
+     }
+    },
+    "type": "object",
+    "required": [
+     "category_id",
+     "amount_cents",
+     "account_id"
+    ],
+    "title": "ExpenseCreate"
+   },
+   "ExpenseOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "category_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Category Id"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "account_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Account Id"
+     },
+     "is_fixed": {
+      "type": "boolean",
+      "title": "Is Fixed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "receipt_url": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Receipt Url"
+     },
+     "source": {
+      "type": "string",
+      "title": "Source"
+     },
+     "ref_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ref Type"
+     },
+     "ref_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ref Id"
+     },
+     "recurring_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Recurring Id"
+     },
+     "reverses_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reverses Id"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "date",
+     "category_id",
+     "amount",
+     "account_id",
+     "is_fixed",
+     "note",
+     "receipt_url",
+     "source",
+     "ref_type",
+     "ref_id",
+     "recurring_id",
+     "reverses_id",
+     "user_id",
+     "ts"
+    ],
+    "title": "ExpenseOut"
+   },
+   "Format": {
+    "type": "string",
+    "enum": [
+     "json",
+     "csv",
+     "xlsx"
+    ],
+    "title": "Format"
+   },
+   "Frequency": {
+    "type": "string",
+    "enum": [
+     "monthly",
+     "weekly"
+    ],
+    "title": "Frequency"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "InvoiceOut": {
+    "properties": {
+     "charge_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Charge Id"
+     },
+     "sale_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sale Id"
+     },
+     "receipt_no": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Receipt No"
+     },
+     "date": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Date"
+     },
+     "due_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Due Date"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "outstanding": {
+      "type": "integer",
+      "title": "Outstanding"
+     },
+     "days_overdue": {
+      "type": "integer",
+      "title": "Days Overdue"
+     },
+     "bucket": {
+      "$ref": "#/components/schemas/AgeingBucket"
+     }
+    },
+    "type": "object",
+    "required": [
+     "charge_id",
+     "sale_id",
+     "receipt_no",
+     "date",
+     "due_date",
+     "amount",
+     "outstanding",
+     "days_overdue",
+     "bucket"
+    ],
+    "title": "InvoiceOut"
+   },
+   "LedgerEntryOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "ref_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ref Type"
+     },
+     "ref_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ref Id"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "amount",
+     "ref_type",
+     "ref_id",
+     "note",
+     "user_id",
+     "ts"
+    ],
+    "title": "LedgerEntryOut"
+   },
+   "LineIn": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "qty": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty"
+     },
+     "bp_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Bp Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "qty",
+     "bp_cents"
+    ],
+    "title": "LineIn"
+   },
+   "LineOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty"
+     },
+     "bp_cents": {
+      "type": "integer",
+      "title": "Bp Cents"
+     },
+     "allocated_cost_cents": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Allocated Cost Cents"
+     },
+     "landed_unit_cost_cents": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Landed Unit Cost Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "product_id",
+     "qty",
+     "bp_cents",
+     "allocated_cost_cents",
+     "landed_unit_cost_cents"
+    ],
+    "title": "LineOut"
+   },
+   "MeOut": {
+    "properties": {
+     "user": {
+      "$ref": "#/components/schemas/UserOut"
+     },
+     "business_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Business Id"
+     },
+     "business_name": {
+      "type": "string",
+      "title": "Business Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "user",
+     "business_id",
+     "business_name"
+    ],
+    "title": "MeOut"
+   },
+   "MetricValue": {
+    "properties": {
+     "value": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     },
+     "previous": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Previous"
+     },
+     "change": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Change"
+     }
+    },
+    "type": "object",
+    "required": [
+     "value",
+     "previous",
+     "change"
+    ],
+    "title": "MetricValue"
+   },
+   "MinPriceItem": {
+    "properties": {
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "min_price_cents": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Price Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "min_price_cents"
+    ],
+    "title": "MinPriceItem"
+   },
+   "MinPricesUpdate": {
+    "properties": {
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/MinPriceItem"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Items"
+     }
+    },
+    "type": "object",
+    "required": [
+     "items"
+    ],
+    "title": "MinPricesUpdate"
+   },
+   "MovementOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty"
+     },
+     "unit_cost": {
+      "type": "integer",
+      "title": "Unit Cost"
+     },
+     "wac_snapshot": {
+      "type": "integer",
+      "title": "Wac Snapshot"
+     },
+     "ref_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ref Type"
+     },
+     "ref_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ref Id"
+     },
+     "reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reason"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "qty",
+     "unit_cost",
+     "wac_snapshot",
+     "ref_type",
+     "ref_id",
+     "reason",
+     "user_id",
+     "ts"
+    ],
+    "title": "MovementOut"
+   },
+   "OwnerEntryOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "account_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Account Id"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "type",
+     "date",
+     "amount",
+     "account_id",
+     "note",
+     "user_id",
+     "ts"
+    ],
+    "title": "OwnerEntryOut"
+   },
+   "OwnerEntryType": {
+    "type": "string",
+    "enum": [
+     "opening_capital",
+     "drawing"
+    ],
+    "title": "OwnerEntryType"
+   },
+   "PaymentIn": {
+    "properties": {
+     "method": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "mpesa_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mpesa Code"
+     }
+    },
+    "type": "object",
+    "required": [
+     "method",
+     "amount_cents"
+    ],
+    "title": "PaymentIn"
+   },
+   "PaymentMethod": {
+    "type": "string",
+    "enum": [
+     "cash",
+     "mpesa",
+     "credit"
+    ],
+    "title": "PaymentMethod"
+   },
+   "PaymentOut": {
+    "properties": {
+     "method": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "mpesa_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mpesa Code"
+     }
+    },
+    "type": "object",
+    "required": [
+     "method",
+     "amount",
+     "mpesa_code"
+    ],
+    "title": "PaymentOut"
+   },
+   "PeriodOut": {
+    "properties": {
+     "start": {
+      "type": "string",
+      "format": "date",
+      "title": "Start"
+     },
+     "end": {
+      "type": "string",
+      "format": "date",
+      "title": "End"
+     },
+     "compared_to_start": {
+      "type": "string",
+      "format": "date",
+      "title": "Compared To Start"
+     },
+     "compared_to_end": {
+      "type": "string",
+      "format": "date",
+      "title": "Compared To End"
+     },
+     "metrics": {
+      "additionalProperties": {
+       "$ref": "#/components/schemas/MetricValue"
+      },
+      "type": "object",
+      "title": "Metrics"
+     }
+    },
+    "type": "object",
+    "required": [
+     "start",
+     "end",
+     "compared_to_start",
+     "compared_to_end",
+     "metrics"
+    ],
+    "title": "PeriodOut"
+   },
+   "PriceHistoryOut": {
+    "properties": {
+     "old_price": {
+      "type": "integer",
+      "title": "Old Price"
+     },
+     "new_price": {
+      "type": "integer",
+      "title": "New Price"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "old_price",
+     "new_price",
+     "reason",
+     "user_id",
+     "ts"
+    ],
+    "title": "PriceHistoryOut"
+   },
+   "PricingMode": {
+    "type": "string",
+    "enum": [
+     "target_margin",
+     "markup",
+     "manual"
+    ],
+    "title": "PricingMode"
+   },
+   "PricingUpdate": {
+    "properties": {
+     "pricing_mode": {
+      "$ref": "#/components/schemas/PricingMode"
+     },
+     "target_value": {
+      "anyOf": [
+       {
+        "type": "number",
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,4}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Value"
+     },
+     "price_cents": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price Cents"
+     },
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pricing_mode",
+     "reason"
+    ],
+    "title": "PricingUpdate"
+   },
+   "ProductCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "sku": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sku"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "uom": {
+      "type": "string",
+      "title": "Uom",
+      "default": "pcs"
+     },
+     "supplier_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supplier Name"
+     },
+     "price_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Price Cents",
+      "default": 0
+     },
+     "pricing_mode": {
+      "$ref": "#/components/schemas/PricingMode",
+      "default": "manual"
+     },
+     "target_value": {
+      "anyOf": [
+       {
+        "type": "number",
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,4}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Value"
+     },
+     "reorder_point": {
+      "anyOf": [
+       {
+        "type": "number",
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Reorder Point",
+      "default": "0"
+     },
+     "lead_time_days": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Lead Time Days",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "ProductCreate"
+   },
+   "ProductOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "sku": {
+      "type": "string",
+      "title": "Sku"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "uom": {
+      "type": "string",
+      "title": "Uom"
+     },
+     "supplier_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supplier Name"
+     },
+     "active": {
+      "type": "boolean",
+      "title": "Active"
+     },
+     "pricing_mode": {
+      "$ref": "#/components/schemas/PricingMode"
+     },
+     "target_value": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Value"
+     },
+     "price_cents": {
+      "type": "integer",
+      "title": "Price Cents"
+     },
+     "wac_cents": {
+      "type": "integer",
+      "title": "Wac Cents"
+     },
+     "qty_on_hand": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty On Hand"
+     },
+     "stock_value_cents": {
+      "type": "integer",
+      "title": "Stock Value Cents"
+     },
+     "margin": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Margin"
+     },
+     "markup": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Markup"
+     },
+     "min_price_cents": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Min Price Cents"
+     },
+     "auto_floor_price_cents": {
+      "type": "integer",
+      "title": "Auto Floor Price Cents"
+     },
+     "floor_price_cents": {
+      "type": "integer",
+      "title": "Floor Price Cents"
+     },
+     "below_floor": {
+      "type": "boolean",
+      "title": "Below Floor"
+     },
+     "reorder_point": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Reorder Point"
+     },
+     "lead_time_days": {
+      "type": "integer",
+      "title": "Lead Time Days"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "sku",
+     "name",
+     "category",
+     "uom",
+     "supplier_name",
+     "active",
+     "pricing_mode",
+     "target_value",
+     "price_cents",
+     "wac_cents",
+     "qty_on_hand",
+     "stock_value_cents",
+     "margin",
+     "markup",
+     "min_price_cents",
+     "auto_floor_price_cents",
+     "floor_price_cents",
+     "below_floor",
+     "reorder_point",
+     "lead_time_days"
+    ],
+    "title": "ProductOut"
+   },
+   "ProductRankOut": {
+    "properties": {
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "sku": {
+      "type": "string",
+      "title": "Sku"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "units_sold": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Units Sold"
+     },
+     "sales": {
+      "type": "integer",
+      "title": "Sales"
+     },
+     "cogs": {
+      "type": "integer",
+      "title": "Cogs"
+     },
+     "gross_profit": {
+      "type": "integer",
+      "title": "Gross Profit"
+     },
+     "average_stock_value": {
+      "type": "integer",
+      "title": "Average Stock Value"
+     },
+     "turnover": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Turnover"
+     },
+     "gmroi": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gmroi"
+     },
+     "days_of_stock": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Days Of Stock"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "sku",
+     "name",
+     "units_sold",
+     "sales",
+     "cogs",
+     "gross_profit",
+     "average_stock_value",
+     "turnover",
+     "gmroi",
+     "days_of_stock"
+    ],
+    "title": "ProductRankOut"
+   },
+   "ProductUpdate": {
+    "properties": {
+     "sku": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Sku"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "uom": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Uom"
+     },
+     "supplier_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Supplier Name"
+     },
+     "reorder_point": {
+      "anyOf": [
+       {
+        "type": "number",
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reorder Point"
+     },
+     "lead_time_days": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Lead Time Days"
+     },
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "title": "ProductUpdate",
+    "description": "Descriptive fields only. Price goes through PUT /products/{id}/pricing; cost only changes\nthrough stock postings."
+   },
+   "ProfitOut": {
+    "properties": {
+     "gross_profit": {
+      "type": "integer",
+      "title": "Gross Profit"
+     },
+     "operating_expenses": {
+      "type": "integer",
+      "title": "Operating Expenses"
+     },
+     "net_profit": {
+      "type": "integer",
+      "title": "Net Profit"
+     },
+     "drawings": {
+      "type": "integer",
+      "title": "Drawings"
+     }
+    },
+    "type": "object",
+    "required": [
+     "gross_profit",
+     "operating_expenses",
+     "net_profit",
+     "drawings"
+    ],
+    "title": "ProfitOut"
+   },
+   "ProfitReportOut": {
+    "properties": {
+     "since": {
+      "type": "string",
+      "format": "date",
+      "title": "Since"
+     },
+     "until": {
+      "type": "string",
+      "format": "date",
+      "title": "Until"
+     },
+     "totals": {
+      "$ref": "#/components/schemas/ProfitTotals"
+     },
+     "days": {
+      "items": {
+       "$ref": "#/components/schemas/DayOut"
+      },
+      "type": "array",
+      "title": "Days"
+     }
+    },
+    "type": "object",
+    "required": [
+     "since",
+     "until",
+     "totals",
+     "days"
+    ],
+    "title": "ProfitReportOut"
+   },
+   "ProfitTotals": {
+    "properties": {
+     "sales": {
+      "type": "integer",
+      "title": "Sales"
+     },
+     "cogs": {
+      "type": "integer",
+      "title": "Cogs"
+     },
+     "gross_profit": {
+      "type": "integer",
+      "title": "Gross Profit"
+     },
+     "gross_margin": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Gross Margin"
+     },
+     "operating_expenses": {
+      "type": "integer",
+      "title": "Operating Expenses"
+     },
+     "fixed_expenses": {
+      "type": "integer",
+      "title": "Fixed Expenses"
+     },
+     "net_profit": {
+      "type": "integer",
+      "title": "Net Profit"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sales",
+     "cogs",
+     "gross_profit",
+     "gross_margin",
+     "operating_expenses",
+     "fixed_expenses",
+     "net_profit"
+    ],
+    "title": "ProfitTotals"
+   },
+   "RankBy": {
+    "type": "string",
+    "enum": [
+     "gross_profit",
+     "units",
+     "turnover",
+     "gmroi"
+    ],
+    "title": "RankBy"
+   },
+   "ReceiptOut": {
+    "properties": {
+     "receipt_no": {
+      "type": "string",
+      "title": "Receipt No"
+     },
+     "text": {
+      "type": "string",
+      "title": "Text"
+     }
+    },
+    "type": "object",
+    "required": [
+     "receipt_no",
+     "text"
+    ],
+    "title": "ReceiptOut"
+   },
+   "ReceiveCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/ReceiveItem"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Items"
+     },
+     "transport_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Transport Cents",
+      "default": 0
+     },
+     "allocation_method": {
+      "$ref": "#/components/schemas/AllocationMethod",
+      "default": "by_value"
+     }
+    },
+    "type": "object",
+    "required": [
+     "items"
+    ],
+    "title": "ReceiveCreate",
+    "description": "Stock arriving: one item, or a bulk order sharing one transport payment."
+   },
+   "ReceiveItem": {
+    "properties": {
+     "product_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Product Id"
+     },
+     "set_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Set Id"
+     },
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "qty": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty"
+     },
+     "bp_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Bp Cents"
+     }
+    },
+    "type": "object",
+    "required": [
+     "qty",
+     "bp_cents"
+    ],
+    "title": "ReceiveItem",
+    "description": "An existing product (by id), a set (by id), or a name. A name matching a set receives the\nset; a name not yet in the shop creates the product.\n\nFor a set, qty is the number of sets and bp_cents the price paid per set: every component is\nstocked, with the set's cost shared across them by selling price."
+   },
+   "ReceiveOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "allocation_method": {
+      "$ref": "#/components/schemas/AllocationMethod"
+     },
+     "goods_value_cents": {
+      "type": "integer",
+      "title": "Goods Value Cents"
+     },
+     "transport_cents": {
+      "type": "integer",
+      "title": "Transport Cents"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/ReceivedLine"
+      },
+      "type": "array",
+      "title": "Lines"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "date",
+     "allocation_method",
+     "goods_value_cents",
+     "transport_cents",
+     "lines"
+    ],
+    "title": "ReceiveOut"
+   },
+   "ReceivedLine": {
+    "properties": {
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "set_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Set Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "new_product": {
+      "type": "boolean",
+      "title": "New Product"
+     },
+     "qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty"
+     },
+     "bp_cents": {
+      "type": "integer",
+      "title": "Bp Cents"
+     },
+     "transport_share_cents": {
+      "type": "integer",
+      "title": "Transport Share Cents"
+     },
+     "landed_unit_cost_cents": {
+      "type": "integer",
+      "title": "Landed Unit Cost Cents"
+     },
+     "wac_cents": {
+      "type": "integer",
+      "title": "Wac Cents"
+     },
+     "price_cents": {
+      "type": "integer",
+      "title": "Price Cents"
+     },
+     "price_status": {
+      "type": "string",
+      "title": "Price Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "name",
+     "set_name",
+     "category",
+     "new_product",
+     "qty",
+     "bp_cents",
+     "transport_share_cents",
+     "landed_unit_cost_cents",
+     "wac_cents",
+     "price_cents",
+     "price_status"
+    ],
+    "title": "ReceivedLine"
+   },
+   "RecurringCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "category_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Category Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "is_fixed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Fixed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "frequency": {
+      "$ref": "#/components/schemas/Frequency"
+     },
+     "day": {
+      "type": "integer",
+      "title": "Day"
+     },
+     "start_date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Date"
+     }
+    },
+    "type": "object",
+    "required": [
+     "category_id",
+     "amount_cents",
+     "account_id",
+     "frequency",
+     "day"
+    ],
+    "title": "RecurringCreate"
+   },
+   "RecurringOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "category_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Category Id"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Account Id"
+     },
+     "is_fixed": {
+      "type": "boolean",
+      "title": "Is Fixed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "frequency": {
+      "$ref": "#/components/schemas/Frequency"
+     },
+     "day": {
+      "type": "integer",
+      "title": "Day"
+     },
+     "next_due": {
+      "type": "string",
+      "format": "date",
+      "title": "Next Due"
+     },
+     "active": {
+      "type": "boolean",
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "category_id",
+     "amount",
+     "account_id",
+     "is_fixed",
+     "note",
+     "frequency",
+     "day",
+     "next_due",
+     "active"
+    ],
+    "title": "RecurringOut"
+   },
+   "RecurringUpdate": {
+    "properties": {
+     "amount_cents": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 0.0,
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Amount Cents"
+     },
+     "account_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Account Id"
+     },
+     "is_fixed": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Is Fixed"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "active": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Active"
+     }
+    },
+    "type": "object",
+    "title": "RecurringUpdate",
+    "description": "Amount, account and on/off can change. To change the schedule, create a new one."
+   },
+   "RepaymentCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "method": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "mpesa_code": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mpesa Code"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "amount_cents",
+     "method"
+    ],
+    "title": "RepaymentCreate"
+   },
+   "ReshareIn": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reason"
+    ],
+    "title": "ReshareIn"
+   },
+   "ReshareOut": {
+    "properties": {
+     "value_cents": {
+      "type": "integer",
+      "title": "Value Cents"
+     },
+     "set": {
+      "$ref": "#/components/schemas/SetOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "value_cents",
+     "set"
+    ],
+    "title": "ReshareOut",
+    "description": "The set's stock on hand keeps its total cost, re-shared across the items by price."
+   },
+   "ReturnCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/ReturnLineIn"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Lines"
+     },
+     "refund_method": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "refund_reference": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Refund Reference"
+     },
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "lines",
+     "refund_method",
+     "reason"
+    ],
+    "title": "ReturnCreate"
+   },
+   "ReturnLineIn": {
+    "properties": {
+     "sale_line_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Sale Line Id"
+     },
+     "qty": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sale_line_id",
+     "qty"
+    ],
+    "title": "ReturnLineIn"
+   },
+   "ReturnLineOut": {
+    "properties": {
+     "sale_line_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Sale Line Id"
+     },
+     "qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty"
+     },
+     "refund": {
+      "type": "integer",
+      "title": "Refund"
+     },
+     "cogs_reversed": {
+      "type": "integer",
+      "title": "Cogs Reversed"
+     }
+    },
+    "type": "object",
+    "required": [
+     "sale_line_id",
+     "qty",
+     "refund",
+     "cogs_reversed"
+    ],
+    "title": "ReturnLineOut"
+   },
+   "ReturnOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "sale_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Sale Id"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason"
+     },
+     "refund_method": {
+      "$ref": "#/components/schemas/PaymentMethod"
+     },
+     "refund_reference": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Refund Reference"
+     },
+     "refund_total": {
+      "type": "integer",
+      "title": "Refund Total"
+     },
+     "cogs_reversed": {
+      "type": "integer",
+      "title": "Cogs Reversed"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/ReturnLineOut"
+      },
+      "type": "array",
+      "title": "Lines"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "sale_id",
+     "reason",
+     "refund_method",
+     "refund_reference",
+     "refund_total",
+     "cogs_reversed",
+     "ts",
+     "lines"
+    ],
+    "title": "ReturnOut"
+   },
+   "ReverseIn": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "reason"
+    ],
+    "title": "ReverseIn"
+   },
+   "Role": {
+    "type": "string",
+    "enum": [
+     "owner",
+     "cashier"
+    ],
+    "title": "Role"
+   },
+   "SaleCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "device_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Device Id"
+     },
+     "customer_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer Id"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/SaleLineIn"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Lines"
+     },
+     "payments": {
+      "items": {
+       "$ref": "#/components/schemas/PaymentIn"
+      },
+      "type": "array",
+      "title": "Payments"
+     },
+     "floor_override_reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Floor Override Reason"
+     },
+     "credit_override_reason": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Credit Override Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "lines"
+    ],
+    "title": "SaleCreate"
+   },
+   "SaleLineIn": {
+    "properties": {
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "qty": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty"
+     },
+     "discount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Discount Cents",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "qty"
+    ],
+    "title": "SaleLineIn"
+   },
+   "SaleLineOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty"
+     },
+     "unit_price": {
+      "type": "integer",
+      "title": "Unit Price"
+     },
+     "discount": {
+      "type": "integer",
+      "title": "Discount"
+     },
+     "line_total": {
+      "type": "integer",
+      "title": "Line Total"
+     },
+     "wac_snapshot": {
+      "type": "integer",
+      "title": "Wac Snapshot"
+     },
+     "cogs": {
+      "type": "integer",
+      "title": "Cogs"
+     },
+     "gross_profit": {
+      "type": "integer",
+      "title": "Gross Profit"
+     },
+     "floor_override": {
+      "type": "boolean",
+      "title": "Floor Override"
+     },
+     "returned_qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Returned Qty"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "product_id",
+     "qty",
+     "unit_price",
+     "discount",
+     "line_total",
+     "wac_snapshot",
+     "cogs",
+     "gross_profit",
+     "floor_override",
+     "returned_qty"
+    ],
+    "title": "SaleLineOut"
+   },
+   "SaleOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "receipt_no": {
+      "type": "string",
+      "title": "Receipt No"
+     },
+     "subtotal": {
+      "type": "integer",
+      "title": "Subtotal"
+     },
+     "discount_total": {
+      "type": "integer",
+      "title": "Discount Total"
+     },
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "cogs": {
+      "type": "integer",
+      "title": "Cogs"
+     },
+     "gross_profit": {
+      "type": "integer",
+      "title": "Gross Profit"
+     },
+     "change_given": {
+      "type": "integer",
+      "title": "Change Given"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "device_id": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Device Id"
+     },
+     "customer_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Customer Id"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     },
+     "lines": {
+      "items": {
+       "$ref": "#/components/schemas/SaleLineOut"
+      },
+      "type": "array",
+      "title": "Lines"
+     },
+     "payments": {
+      "items": {
+       "$ref": "#/components/schemas/PaymentOut"
+      },
+      "type": "array",
+      "title": "Payments"
+     },
+     "refunded_total": {
+      "type": "integer",
+      "title": "Refunded Total"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "receipt_no",
+     "subtotal",
+     "discount_total",
+     "total",
+     "cogs",
+     "gross_profit",
+     "change_given",
+     "status",
+     "device_id",
+     "customer_id",
+     "user_id",
+     "ts",
+     "lines",
+     "payments",
+     "refunded_total"
+    ],
+    "title": "SaleOut"
+   },
+   "SetOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "active": {
+      "type": "boolean",
+      "title": "Active"
+     },
+     "set_value_cents": {
+      "type": "integer",
+      "title": "Set Value Cents"
+     },
+     "components": {
+      "items": {
+       "$ref": "#/components/schemas/ComponentOut"
+      },
+      "type": "array",
+      "title": "Components"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "category",
+     "active",
+     "set_value_cents",
+     "components"
+    ],
+    "title": "SetOut"
+   },
+   "SetUpsert": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "components": {
+      "items": {
+       "$ref": "#/components/schemas/ComponentIn"
+      },
+      "type": "array",
+      "minItems": 1,
+      "title": "Components"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "components"
+    ],
+    "title": "SetUpsert"
+   },
+   "SettingsOut": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "price_rounding_cents": {
+      "type": "integer",
+      "title": "Price Rounding Cents"
+     },
+     "price_floor_pct": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Price Floor Pct"
+     },
+     "reprice_threshold_pct": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Reprice Threshold Pct"
+     },
+     "trading_days_per_month": {
+      "type": "integer",
+      "title": "Trading Days Per Month"
+     },
+     "default_allocation_method": {
+      "$ref": "#/components/schemas/AllocationMethod"
+     },
+     "default_target_margin": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Default Target Margin"
+     },
+     "alert_low_cash_days": {
+      "type": "integer",
+      "title": "Alert Low Cash Days"
+     },
+     "alert_credit_risk_pct": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Alert Credit Risk Pct"
+     },
+     "alert_slow_moving_days": {
+      "type": "integer",
+      "title": "Alert Slow Moving Days"
+     },
+     "alert_max_days_of_stock": {
+      "type": "integer",
+      "title": "Alert Max Days Of Stock"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "price_rounding_cents",
+     "price_floor_pct",
+     "reprice_threshold_pct",
+     "trading_days_per_month",
+     "default_allocation_method",
+     "default_target_margin",
+     "alert_low_cash_days",
+     "alert_credit_risk_pct",
+     "alert_slow_moving_days",
+     "alert_max_days_of_stock"
+    ],
+    "title": "SettingsOut"
+   },
+   "SettingsUpdate": {
+    "properties": {
+     "name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Name"
+     },
+     "price_rounding_cents": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price Rounding Cents"
+     },
+     "price_floor_pct": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 10.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,4}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price Floor Pct"
+     },
+     "reprice_threshold_pct": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 1.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,4}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Reprice Threshold Pct"
+     },
+     "trading_days_per_month": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 31.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trading Days Per Month"
+     },
+     "default_allocation_method": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/AllocationMethod"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "default_target_margin": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMaximum": 1.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,4}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Default Target Margin"
+     },
+     "alert_low_cash_days": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 365.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Alert Low Cash Days"
+     },
+     "alert_credit_risk_pct": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 1.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,4}0*$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Alert Credit Risk Pct"
+     },
+     "alert_slow_moving_days": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 365.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Alert Slow Moving Days"
+     },
+     "alert_max_days_of_stock": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 3650.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Alert Max Days Of Stock"
+     }
+    },
+    "type": "object",
+    "title": "SettingsUpdate",
+    "description": "Fractions are 0-1 (0.10 = 10%), with at most 4 decimal places."
+   },
+   "SetupOut": {
+    "properties": {
+     "configured": {
+      "type": "boolean",
+      "title": "Configured"
+     },
+     "business_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Business Id"
+     },
+     "business_name": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Business Name"
+     },
+     "users": {
+      "items": {
+       "$ref": "#/components/schemas/SetupUser"
+      },
+      "type": "array",
+      "title": "Users"
+     }
+    },
+    "type": "object",
+    "required": [
+     "configured",
+     "business_id",
+     "business_name",
+     "users"
+    ],
+    "title": "SetupOut",
+    "description": "What the sign-in screen needs before anyone is signed in."
+   },
+   "SetupUser": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "role": {
+      "$ref": "#/components/schemas/Role"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "role"
+    ],
+    "title": "SetupUser"
+   },
+   "SharedCostType": {
+    "type": "string",
+    "enum": [
+     "transport",
+     "duty",
+     "packaging",
+     "other"
+    ],
+    "title": "SharedCostType"
+   },
+   "SmsOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "phone": {
+      "type": "string",
+      "title": "Phone"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "kind": {
+      "type": "string",
+      "title": "Kind"
+     },
+     "ref_type": {
+      "type": "string",
+      "title": "Ref Type"
+     },
+     "ref_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Ref Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "phone",
+     "message",
+     "kind",
+     "ref_type",
+     "ref_id",
+     "status",
+     "created_at"
+    ],
+    "title": "SmsOut"
+   },
+   "StatementOut": {
+    "properties": {
+     "customer": {
+      "$ref": "#/components/schemas/CustomerOut"
+     },
+     "open_invoices": {
+      "items": {
+       "$ref": "#/components/schemas/InvoiceOut"
+      },
+      "type": "array",
+      "title": "Open Invoices"
+     },
+     "ageing": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "$ref": "#/components/schemas/AgeingBucket"
+      },
+      "type": "object",
+      "title": "Ageing"
+     },
+     "entries": {
+      "items": {
+       "$ref": "#/components/schemas/CreditEntryOut"
+      },
+      "type": "array",
+      "title": "Entries"
+     }
+    },
+    "type": "object",
+    "required": [
+     "customer",
+     "open_invoices",
+     "ageing",
+     "entries"
+    ],
+    "title": "StatementOut"
+   },
+   "StockAdjustmentCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "type": {
+      "$ref": "#/components/schemas/WriteOffType"
+     },
+     "qty": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty"
+     },
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "type",
+     "qty",
+     "reason"
+    ],
+    "title": "StockAdjustmentCreate"
+   },
+   "StockAdjustmentOut": {
+    "properties": {
+     "movement_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Movement Id"
+     },
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "type": {
+      "$ref": "#/components/schemas/WriteOffType"
+     },
+     "qty": {
+      "type": "string",
+      "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d*$",
+      "title": "Qty"
+     },
+     "value_cents": {
+      "type": "integer",
+      "title": "Value Cents"
+     },
+     "expense_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Expense Id"
+     },
+     "drawing": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/DrawingOut"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "movement_id",
+     "product_id",
+     "type",
+     "qty",
+     "value_cents",
+     "expense_id",
+     "drawing"
+    ],
+    "title": "StockAdjustmentOut"
+   },
+   "StockQty": {
+    "properties": {
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "qty": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string",
+        "pattern": "^(?!^[-+.]*$)[+-]?0*\\d*\\.?\\d{0,3}0*$"
+       }
+      ],
+      "title": "Qty"
+     }
+    },
+    "type": "object",
+    "required": [
+     "product_id",
+     "qty"
+    ],
+    "title": "StockQty"
+   },
+   "SuggestionOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "product_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Product Id"
+     },
+     "suggested_price": {
+      "type": "integer",
+      "title": "Suggested Price"
+     },
+     "price_at_suggestion": {
+      "type": "integer",
+      "title": "Price At Suggestion"
+     },
+     "previous_wac": {
+      "type": "integer",
+      "title": "Previous Wac"
+     },
+     "trigger_wac": {
+      "type": "integer",
+      "title": "Trigger Wac"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "product_id",
+     "suggested_price",
+     "price_at_suggestion",
+     "previous_wac",
+     "trigger_wac",
+     "status",
+     "created_at"
+    ],
+    "title": "SuggestionOut"
+   },
+   "SuggestionStatus": {
+    "type": "string",
+    "enum": [
+     "pending",
+     "approved",
+     "rejected",
+     "superseded"
+    ],
+    "title": "SuggestionStatus"
+   },
+   "TransferCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Date"
+     },
+     "from_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "From Account Id"
+     },
+     "to_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "To Account Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "fee_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "title": "Fee Cents",
+      "default": 0
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     }
+    },
+    "type": "object",
+    "required": [
+     "from_account_id",
+     "to_account_id",
+     "amount_cents"
+    ],
+    "title": "TransferCreate"
+   },
+   "TransferOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "date": {
+      "type": "string",
+      "format": "date",
+      "title": "Date"
+     },
+     "from_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "From Account Id"
+     },
+     "to_account_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "To Account Id"
+     },
+     "amount": {
+      "type": "integer",
+      "title": "Amount"
+     },
+     "fee": {
+      "type": "integer",
+      "title": "Fee"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "user_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "User Id"
+     },
+     "ts": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Ts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "date",
+     "from_account_id",
+     "to_account_id",
+     "amount",
+     "fee",
+     "note",
+     "user_id",
+     "ts"
+    ],
+    "title": "TransferOut"
+   },
+   "UserCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "role": {
+      "$ref": "#/components/schemas/Role"
+     }
+    },
+    "type": "object",
+    "required": [
+     "name",
+     "role"
+    ],
+    "title": "UserCreate"
+   },
+   "UserOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "title": "Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "role": {
+      "$ref": "#/components/schemas/Role"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "name",
+     "phone",
+     "role"
+    ],
+    "title": "UserOut"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "WriteOffCreate": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "amount_cents": {
+      "type": "integer",
+      "minimum": 0.0,
+      "exclusiveMinimum": 0.0,
+      "title": "Amount Cents"
+     },
+     "reason": {
+      "type": "string",
+      "minLength": 1,
+      "title": "Reason"
+     }
+    },
+    "type": "object",
+    "required": [
+     "amount_cents",
+     "reason"
+    ],
+    "title": "WriteOffCreate"
+   },
+   "WriteOffType": {
+    "type": "string",
+    "enum": [
+     "damage",
+     "theft",
+     "owner_consumption"
+    ],
+    "title": "WriteOffType"
+   }
+  },
+  "securitySchemes": {
+   "APIKeyHeader": {
+    "type": "apiKey",
+    "description": "Dev auth stub: user id",
+    "in": "header",
+    "name": "X-User-Id"
+   }
+  }
+ }
+}

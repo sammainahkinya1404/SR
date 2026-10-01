@@ -1,0 +1,18 @@
+# Secrets & local config
+.env
+
+# Local databases (real shop data stays on this machine)
+*.db
+*.db-wal
+*.db-shm
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# Node
+node_modules/
+.next/
